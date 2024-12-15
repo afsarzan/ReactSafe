@@ -1,4 +1,5 @@
 import './App.css'
+import Button from './components/Button'
 
 function App() {
 
@@ -8,6 +9,7 @@ function App() {
         commit 
      </h1>
      <p>Afsar Ahmed</p>
+     <Button text='parent text'/>
     </>
   )
 }
