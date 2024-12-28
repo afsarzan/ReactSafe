@@ -1,8 +1,22 @@
+import { FC } from "react";
+import styled from "styled-components";
 
-const Button = ({text = "default text"}) => {
-  return (
-    <button className="bg-blue-500">{text} </button>
-  )
+const StyledButton = styled.button`
+  background-color: purple;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: none;
+`;
+
+type ButtonProps = {
+  text: string;
 }
 
-export default Button
+export const Button: FC<ButtonProps> = ({
+  text
+}) => {
+  return <StyledButton>
+    {text}
+  </StyledButton>
+}

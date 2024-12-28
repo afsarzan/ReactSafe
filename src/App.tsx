@@ -1,18 +1,21 @@
-import { useState } from 'react'
 import './App.css'
-import PostsPage from './PostsPage'
-import AutoCounter from './components/AutoCounter'
+import { LoginForm } from './components/LoginForm';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+
 
 function App() {
-  const [showCounter, setShowCounter] = useState(true);
   return (
-    <>
-      {showCounter && <AutoCounter />}
-      <button onClick={() => {
-        setShowCounter(show => !show);
-      }}>Toggle Show Counter</button>
-      <PostsPage />
-    </>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <LoginForm />
+    </ThemeProvider>
   )
 }
 
