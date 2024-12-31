@@ -9,7 +9,6 @@ const AutoCounter = () => {
       setCounterValue(counterVal => {
         return counterVal + 1;
       });
-      // console.log('counter value updated')
     }, 100);
     return timer;
   } 
@@ -21,10 +20,7 @@ const AutoCounter = () => {
     setCounterValue(0);
   }
 
-  // http call?
-  // set timeout
 
-  console.log('this runs everytime component updates')
 
   useEffect(() => {
     // mount
