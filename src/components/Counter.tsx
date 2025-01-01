@@ -1,15 +1,15 @@
+import { Button } from "@mui/material";
 import { useState } from "react";
 
 const Counter = () => {
-  // let counterValue = 10;
   const [counterValue, setCounterValue] = useState(10);
 
   const increment = () => {
-    setCounterValue(counterValue + 1);
+    setCounterValue((currValue) => currValue + 1)
   } 
   
   const decrement = () => {
-    setCounterValue(counterValue - 1);
+    setCounterValue((currValue) => currValue - 1)
   }
   const reset = () => {
     setCounterValue(0);
@@ -18,11 +18,11 @@ const Counter = () => {
     <h2 className="text-2xl">Count is</h2>
     <p className="text-xl">{counterValue}</p>
     <div className="flex gap-4 mb-4 justify-center">
-      <button onClick={decrement}>- Decrement</button>
-      <button onClick={increment}>+ Increment</button>
+      <Button onClick={decrement}>- Decrement</Button>
+      <Button onClick={increment}>+ Increment</Button>
     </div>
     <div className="flex justify-center">
-      <button onClick={reset}>Reset</button>
+      <Button onClick={reset}>Reset</Button>
     </div>
   </section>
 }

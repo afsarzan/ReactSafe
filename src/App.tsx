@@ -1,21 +1,33 @@
+import { useEffect, useState } from 'react'
 import './App.css'
-import { LoginForm } from './components/LoginForm';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-  },
-});
-
+import Todos from './components/Todos'
+import { getTodos } from './api/todos/todos-api'
+import { Todo } from './types';
 
 function App() {
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [finishedCount, setFinishedCount] = useState(0);
+  
+  useEffect(() => {
+    console.log('app mounted')
+    getTodos().then((todosFromServer) => {
+      console.log({todos: todosFromServer})
+      setTodos(todosFromServer);
+    })
+  }, [])
+
+  useEffect(() => {
+    const count = todos.filter(todo => todo.completed).length;
+    setFinishedCount(count);
+  }, [todos])
+
   return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <LoginForm />
-    </ThemeProvider>
+    <>
+      <p className='text-2xl'>
+        Finished Todos = <span>{finishedCount}</span>
+      </p>
+      <Todos todoArray={todos} />
+    </>
   )
 }
 

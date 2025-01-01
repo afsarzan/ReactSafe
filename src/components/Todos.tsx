@@ -1,63 +1,20 @@
-import { useState } from "react";
+import { FC } from "react";
+import { Todo } from "../types";
 import TodoItem from "./TodoItem";
 
-const Todos = () => {
-  const [todos, setTodos] = useState([
-    {
-      text: "todo 1",
-      id: 1,
-    },
-    {
-      text: "todo 2",
-      id: 2,
-    },
-    {
-      text: "todo 3",
-      id: 3,
-    },
-    {
-      text: "todo 4",
-      id: 4,
-    },
-    {
-      text: "todo 5",
-      id: 5,
-    },
-    {
-      text: "todo 6",
-      id: 6,
-    },
-  ]);
-  const deleteItem = (itemId: number) => {
-    setTodos(
-      todos.filter((itemEl) => {
-        return itemEl.id !== itemId;
-      })
-    );
-  };
-
-  const addNewTodo = () => {
-    setTodos((todos) => {
-      return [
-        {
-          text: "new Todo",
-          id: Date.now(),
-        },
-        ...todos,
-      ];
-    });
-  };
-
+type TodosProps = {
+  todoArray: Todo[]
+}
+const Todos: FC<TodosProps> = ({
+  todoArray
+}) => {
   return (
     <ul>
-      <li>
-        <button onClick={addNewTodo}>Click me to add new todo</button>
-      </li>
-      {todos.map((todoItem) => {
-        return (
-          <TodoItem key={todoItem.id} item={todoItem} onDelete={deleteItem} />
-        );
-      })}
+      {
+        todoArray.map((todo) => {
+          return <TodoItem item={todo} key={todo.id} />
+        })
+      }
     </ul>
   );
 };
