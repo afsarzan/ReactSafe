@@ -1,6 +1,5 @@
-export type Todo = {
-  title: string;
+export type Note = {
+  text: string;
   id: number;
-  completed: boolean;
-  userId: number;
+  starred: boolean;
 };
