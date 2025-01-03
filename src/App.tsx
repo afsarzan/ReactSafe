@@ -1,42 +1,20 @@
-import { useState } from 'react';
-import './App.css'
-import Notes from './components/Notes'
-import { Note } from './types';
-import { AppContext } from './AppContext';
+import { useEffect, useState } from "react";
+import "./App.css";
+import Notes from "./components/Notes";
+import { Note } from "./types";
+import { AppContext } from "./AppContext";
+import useWindowSize from "./hooks/useWindowResize";
+import useFetch from "./hooks/useFetch";
 
 function App() {
-  const [notes, setNotes] = useState<Note[]>([
-    {
-      text: "note 1",
-      id: 1,
-      starred: true,
-    },
-    {
-      text: "note 2",
-      id: 2,
-      starred: false,
-    },
-    {
-      text: "note 3",
-      id: 3,
-      starred: false,
-    },
-    {
-      text: "note 4",
-      id: 4,
-      starred: false,
-    },
-    {
-      text: "note 5",
-      id: 5,
-      starred: false,
-    },
-    {
-      text: "note 6",
-      id: 6,
-      starred: false,
-    },
-  ]);
+  const [notes, setNotes] = useState<Note[]>([]);
+
+  const size = useWindowSize();
+  const { data, loading } = useFetch<Note[]>('https://jsonplaceholder.typicode.com/todos');
+
+  useEffect(() => {
+    setNotes(data ? data : []);
+  }, [data]);
 
   const toggleStarNote = (noteId: number) => {
     setNotes(
@@ -44,31 +22,37 @@ function App() {
         if (noteItem.id === noteId) {
           return {
             ...noteItem,
-            starred: !noteItem.starred
-          }
+            completed: !noteItem.completed,
+          };
         }
         return noteItem;
       })
-    )
-  }
-  
+    );
+  };
+
   const deleteNote = (noteId: number) => {
     setNotes(
       notes.filter((noteItem) => {
         return noteItem.id !== noteId;
       })
-    )
+    );
+  };
+
+  if (loading) {
+    return <h1>Loading...</h1>;
   }
 
   return (
-    <AppContext.Provider value={{
-      notes,
-      toggleStarNote,
-      deleteNote
-    }}>
-      <Notes />
+    <AppContext.Provider
+      value={{
+        notes,
+        toggleStarNote,
+        deleteNote,
+      }}
+    >
+      {size.width < 300 ? <h1>Resolution not supported</h1> : <Notes />}
     </AppContext.Provider>
-  )
+  );
 }
 
-export default App
+export default App;
