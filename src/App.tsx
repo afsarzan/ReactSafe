@@ -1,58 +1,20 @@
-import { useEffect, useState } from "react";
-import "./App.css";
-import Notes from "./components/Notes";
-import { Note } from "./types";
-import { AppContext } from "./AppContext";
-import useWindowSize from "./hooks/useWindowResize";
-import useFetch from "./hooks/useFetch";
+import { RouterProvider } from 'react-router-dom'
+import './App.css'
+import appRouter from './routes'
+import Loader from './components/Loader';
+import { useAppSelector } from './store/hooks';
+import { selectApiCallInProgress } from './store/contactsSlice';
 
 function App() {
-  const [notes, setNotes] = useState<Note[]>([]);
-
-  const size = useWindowSize();
-  const { data, loading } = useFetch<Note[]>('https://jsonplaceholder.typicode.com/todos');
-
-  useEffect(() => {
-    setNotes(data ? data : []);
-  }, [data]);
-
-  const toggleStarNote = (noteId: number) => {
-    setNotes(
-      notes.map((noteItem) => {
-        if (noteItem.id === noteId) {
-          return {
-            ...noteItem,
-            completed: !noteItem.completed,
-          };
-        }
-        return noteItem;
-      })
-    );
-  };
-
-  const deleteNote = (noteId: number) => {
-    setNotes(
-      notes.filter((noteItem) => {
-        return noteItem.id !== noteId;
-      })
-    );
-  };
-
-  if (loading) {
-    return <h1>Loading...</h1>;
-  }
-
-  return (
-    <AppContext.Provider
-      value={{
-        notes,
-        toggleStarNote,
-        deleteNote,
-      }}
-    >
-      {size.width < 300 ? <h1>Resolution not supported</h1> : <Notes />}
-    </AppContext.Provider>
-  );
+  const isLoading = useAppSelector(selectApiCallInProgress);
+  return <>
+    {
+      isLoading && <div className='z-20 bg-black/75 fixed w-screen h-screen flex items-center justify-center'>
+        <Loader />
+      </div>
+    }
+    <RouterProvider router={appRouter} />
+  </>
 }
 
-export default App;
+export default App
