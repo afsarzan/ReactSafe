@@ -25,7 +25,7 @@ const appRouter = createBrowserRouter(
       <Route path="about" element={<About />}>
         <Route index={true} element={<div>
           <h1 className="text-2xl">This is the About page</h1>
-          <p>Click one of the menu items to navigate</p>
+          <p>Click to navigate</p>
         </div>} />
         <Route path="info" element={<Info />} />
         <Route path="settings" element={<Settings />} />
