@@ -1,6 +1,12 @@
 import { Form } from "react-router-dom";
+import { Contact } from "../types";
 
-export default function ContactForm({ contact = null }) {
+
+
+type ContactFormProps = {
+  contact: Contact | null | undefined; // Allow Contact, null, or undefined
+};
+export default function ContactForm({ contact = null }: ContactFormProps) {
     return (
      <div className={`flex mx-auto w-[500px] gap-10 ${contact ? 'items-center' : ''}`}>
          <Form action="./" method="POST" className="flex flex-col gap-4 items-center">
