@@ -61,7 +61,7 @@ const ContactsPage = () => {
   
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <ContactForm/>
+      <ContactForm contact={null}/>
       <section className="md:col-span-2">
         <h1 className="text-center text-lg">Contacts List</h1>
         <div className="overflow-x-auto">
