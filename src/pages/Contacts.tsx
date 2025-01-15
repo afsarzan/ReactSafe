@@ -1,12 +1,14 @@
-import { ActionFunction, Form, Link, useLoaderData } from "react-router-dom";
-import { createContact, getContacts } from "../api/contactsApi";
+import { ActionFunction, Form, Link, redirect, useLoaderData } from "react-router-dom";
+import { createContact, getContacts, updateContact } from "../api/contactsApi";
+import ContactForm from "./ContactForm";
+
 
 export const contactsLoader = async () => {
   const contacts = await getContacts();
   return {
-    contacts,
-  };
-};
+    contacts
+  }
+}
 
 export const createContactAction: ActionFunction = async ({
   request
@@ -15,72 +17,51 @@ export const createContactAction: ActionFunction = async ({
   const first = formData.get('first')?.toString();
   const last = formData.get('last')?.toString();
   const email = formData.get('email')?.toString();
-  if (!first || !last || !email) {
+  if (!email || !first || !last) {
     throw new Error('First name, last name, and email are required');
   }
-  const { contact } = await createContact({
+
+  const contact = await createContact({
     name: {
       first,
       last
     },
     email
   });
-  return {
-    contact
-  }
+  return contact
 }
 
+
+export const updateContactAction: ActionFunction = async ({
+  request,params
+}) => {
+  const formData = await request.formData();
+  const { contactId } = params;
+  const first = formData.get('first')?.toString();
+  const last = formData.get('last')?.toString();
+  const email = formData.get('email')?.toString();
+  if (!email || !first || !last) {
+    throw new Error('First name, last name, and email are required');
+  }
+
+  await updateContact({
+    name: {
+      first,
+      last
+    },
+    email
+  },contactId!);
+    return redirect('/contacts');
+}
+
+
+
 const ContactsPage = () => {
-  const { contacts } = useLoaderData() as Awaited<
-    ReturnType<typeof contactsLoader>
-  >;
+  const { contacts } = useLoaderData() as Awaited<ReturnType<typeof contactsLoader>>;
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <Form action="./" method="POST" className="flex flex-col gap-4 items-center">
-        <h2 className="text-center text-lg">Add new contact</h2>
-        <label htmlFor="firstName" className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">First name</span>
-          </div>
-          <input
-            name="first"
-            id="firstName"
-            type="text"
-            placeholder="Type here"
-            className="input input-bordered w-full max-w-xs"
-          />
-        </label>
-
-        <label htmlFor="lastName" className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">Last name</span>
-          </div>
-          <input
-            name="last"
-            id="lastName"
-            type="text"
-            placeholder="Type here"
-            className="input input-bordered w-full max-w-xs"
-          />
-        </label>
-
-        <label htmlFor="email" className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">Email</span>
-          </div>
-          <input
-            name="email"
-            id="email"
-            type="text"
-            placeholder="Type here"
-            className="input input-bordered w-full max-w-xs"
-          />
-        </label>
-        <button className="btn btn-primary btn-outline max-w-xs">
-          Submit{" "}
-        </button>
-      </Form>
-
+      <ContactForm/>
       <section className="md:col-span-2">
         <h1 className="text-center text-lg">Contacts List</h1>
         <div className="overflow-x-auto">
@@ -129,16 +110,23 @@ const ContactsPage = () => {
                       </Link>
                     </td>
                     <td>
-                      <Form method="POST" action={`/contacts/${contact.login.uuid}/destroy`} onSubmit={(event) => {
-                        const result = confirm('Please confirm deletion of this contact.');
+                      <div className="flex justify-normal gap-2">
+                      <Link to={`/contacts/${contact.login.uuid}/edit`}>
+                        <button className="btn btn-outline bg-blue-500 btn-xs mr-5">
+                          Edit
+                        </button>
+                      </Link>
+                      <Form method="POST" onSubmit={(event) => {
+                        const result = confirm('Confirm deletion of this contact.');
                         if (!result) {
                           event.preventDefault();
                         }
-                      }}>
+                      }} action={`/contacts/${contact.login.uuid}/destroy`}>
                         <button className="btn btn-outline btn-error btn-xs">
                           delete
                         </button>
                       </Form>
+                      </div>
                     </td>
                   </tr>
                 );

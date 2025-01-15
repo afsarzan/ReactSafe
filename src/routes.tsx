@@ -4,12 +4,16 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
-import ContactsPage, { contactsLoader, createContactAction } from "./pages/Contacts";
 import NotFoundPage from "./pages/NotFound";
 import RootLayout from "./pages/Root";
-import ContactDetailPage, { contactDetailsLoader } from "./pages/ContactDetail";
+import ContactDetailPage, { contactByIdLoader } from "./pages/ContactDetail";
 import { ContactNotFoundPage } from "./pages/ContactNotFound";
-import { destroyContactAction } from "./pages/DestroyContact";
+import ContactsPage, { contactsLoader, createContactAction, updateContactAction } from "./pages/Contacts";
+import { destroyContactAction } from "./pages/ContactDestroy";
+import About from "./pages/About/About";
+import Info from "./pages/About/Info";
+import Settings from "./pages/About/Settings";
+import ContactEditPage from "./pages/ContactEdit";
 
 const appRouter = createBrowserRouter(
   createRoutesFromElements(
@@ -19,21 +23,42 @@ const appRouter = createBrowserRouter(
         element={<Navigate to={"contacts"} replace={true} />}
       />
 
-      <Route action={destroyContactAction} path="contacts/:contactId/destroy" />
+
+      <Route path="about" element={<About />}>
+        <Route index={true} element={<div>
+          <h1 className="text-2xl">This is the About page</h1>
+          <p>Click one of the menu items to navigate</p>
+        </div>} />
+        <Route path="info" element={<Info />} />
+        <Route path="settings" element={<Settings />} />
+      </Route>
 
       <Route
         path="contacts"
         action={createContactAction}
-        element={<ContactsPage />}
         loader={contactsLoader}
+        element={<ContactsPage />}
       />
 
       <Route
         path="contacts/:contactId"
+        loader={contactByIdLoader}
         element={<ContactDetailPage />}
-        loader={contactDetailsLoader}
         errorElement={<ContactNotFoundPage />}
       />
+
+      <Route 
+        action={destroyContactAction} 
+        path="contacts/:contactId/destroy" />
+
+      <Route 
+        path="contacts/:contactId/edit"        
+        loader={contactByIdLoader} 
+        element={<ContactEditPage />}
+        action={updateContactAction}
+        errorElement={<ContactNotFoundPage />}
+         />
+
     </Route>,
   ),
 );

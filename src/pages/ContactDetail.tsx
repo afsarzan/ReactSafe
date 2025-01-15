@@ -1,28 +1,23 @@
-import { Form, Params, useLoaderData } from "react-router-dom";
 import { getContactById } from "../api/contactsApi";
+import { Form, Link, Params, useLoaderData } from "react-router-dom";
 
-type LoaderArgs = {
-  params: Params<string>;
-};
-
-export const contactDetailsLoader = async ({ params }: LoaderArgs) => {
+export const contactByIdLoader = async ({
+  params
+}: {
+  params: Params
+}) => {
   const { contactId } = params;
-  if (!contactId) {
-    throw new Error("ContactId not provided");
-  }
-  const contact = await getContactById(contactId);
+  const contact = await getContactById(contactId!);
   if (!contact) {
-    throw new Error("Contact not found");
+    throw new Error("Contact not found.");
   }
   return {
-    contact,
-  };
-};
+    contact
+  }
+}
 
 const ContactDetailPage = () => {
-  const { contact } = useLoaderData() as Awaited<
-    ReturnType<typeof contactDetailsLoader>
-  >;
+  const { contact } = useLoaderData() as Awaited<ReturnType<typeof contactByIdLoader>>;
   return (
     <div className="card card-compact w-96 mx-auto bg-base-100 shadow-xl">
       <div className="card-body items-center text-center">
@@ -48,13 +43,19 @@ const ContactDetailPage = () => {
         </h2>
         <p>{contact.email}</p>
         <div className="card-actions justify-end">
-          <Form method="POST" action={`/contacts/${contact.login.uuid}/destroy`} onSubmit={(event) => {
-            const result = confirm('Please confirm deletion of this contact.');
+          <Link to={`/contacts/${contact.login.uuid}/edit`}>
+                                  <button className="btn btn-outline bg-blue-500 btn-xs mr-5">
+                                    Edit
+                                  </button>
+                                </Link>
+                                
+          <Form method="POST" onSubmit={(event) => {
+            const result = confirm('Confirm deletion of this contact.');
             if (!result) {
               event.preventDefault();
             }
-          }}>
-            <button className="btn btn-outline btn-error btn-xs">
+          }} action={`/contacts/${contact.login.uuid}/destroy`}>
+            <button className="btn btn-outline btn-error btn-sm">
               delete
             </button>
           </Form>
