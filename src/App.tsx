@@ -1,11 +1,16 @@
-import { RouterProvider } from 'react-router-dom'
 import './App.css'
-import appRouter from './routes'
+import Counter from './components/Counter'
+import CounterAsync from './components/CounterAsync'
+import CounterAsyncExternal from './components/CounterAsyncExternal';
 
 function App() {
-
   return (
-    <RouterProvider router={appRouter} />
+    <>
+      <h1 data-testid="headline" className='text-xl'>Counter React App</h1>
+      <div className="card">
+        <CounterAsyncExternal />
+      </div>
+    </>
   )
 }
 
